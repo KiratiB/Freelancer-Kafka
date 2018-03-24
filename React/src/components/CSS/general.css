@@ -1,0 +1,106 @@
+.custom-radio{
+    width: 50%;
+    background-color:whitesmoke;
+    white-space: nowrap;
+
+}
+#role1{
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+#role2{
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+#role1:hover{
+    background-color:#E8E8E8;
+}
+
+#role2:hover{
+    background-color:#E8E8E8;
+}
+
+.btn-large
+{
+    width: 100%;
+
+}
+form
+{
+    margin-top: 5%;
+    padding-top: 10px;
+    background-color:white;
+    border-radius: 5px;
+    box-shadow: 5px 10px 8px #888888;
+    float: left;
+    display:inline-block;
+
+}
+
+.noBorder{
+    box-shadow: none;
+}
+
+.image{
+    width: 220px;
+}
+.pagefont{
+    font-size: 15px;
+    font-family: sans-serif;
+    line-height: 1.5;
+    color: #4D525B;
+    margin-bottom: 0;
+}
+
+.customfileupload{
+    border-style: dashed !important;
+}
+
+.errormessage
+{
+    font-size: x-small;
+    margin-top: 0px;
+    color: red;
+    padding-top: 0px;
+}
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.btnBid
+{
+    bottom: 0px;
+    right: 0px;
+}
+.cusPanel{
+    background: rgb(223, 117, 20);
+    float : left;
+    font-weight: 600;
+    color: black;
+    position: relative;
+    border: #F0F0F0;
+    padding: 10px;
+
+}
+
+#page-numbers {
+    list-style: none;
+    display: flex;
+}
+
+#page-numbers > li {
+    margin-right: 0.3em;
+    color: blue;
+    user-select: none;
+    cursor: pointer;
+}
+
+.gridFont{
+    padding-top: 3px;
+    font-size: 10px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

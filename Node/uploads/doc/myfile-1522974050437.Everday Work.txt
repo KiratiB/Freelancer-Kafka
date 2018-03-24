@@ -1,0 +1,21 @@
+Important:
+Ubuntu Location : C:\Users\HP\Documents\Virtual Machines\Ubuntu 64-bit
+
+272 IMP:
+Linux boot process
+
+202 IMP:
+reverse engineering - class and sequence diagram
+
+
+Work:
+Shim Assignment
+Call Chase
+volenteering
+SSN office
+login and signup API for shim
+
+
+Today:
+All sorting Algorithms
+272 ppt

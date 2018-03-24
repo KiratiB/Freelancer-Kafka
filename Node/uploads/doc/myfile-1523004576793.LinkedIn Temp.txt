@@ -1,0 +1,23 @@
+Working in TPFM (Third Party Fund Management) project as a Technical Project Manager. Handling team of 15 resources with client communication for Architectural decisions, estimations, resourcing. Also doing day to day operational activities for Infosys project management. 
+
+TPFM is a suite of 5 applications in which two are internet application. These all applications are designed in ASP.NET 3.5, C#.net 3.5, WCF.
+
+Currently working on a tablet prototype of one existing TPFM application. This POC is built on ASP.NET, C#.NET, HTML5, JQuery-mobile, highcharts.
+
+Responsibilities:
+•Involved estimation, resourcing, client day to day communication.
+•Assisting team of 15 peoples. 
+•Followed all the steps of software engineering life cycle i.e. Specification, Requirement, Analysis, Design, Development, Testing and Maintenance primarily focusing on specification and design constructs.
+•Directly interact with the client to understand their existing issues in the system.
+•Involved in the requirement elicitation for their additional requirements.
+•Provide the optimal solution for addressing the production issues and design to accommodate their new requirements with the minimal change in the code.
+•Perform application performance analysis and address the performance issues exist in the application
+•Mentoring team members on technical issues.
+•Involved in code and documents review.
+
+
+Worked in TPFM(Third Party Fund Management) project Development, Support and Maintanance.
+Implemented End to End Development of Individual Module across related application suit using ASP.Net, Fortify Scan and SQL Server 2008
+Involved in Report Generation using SQL Server Reporting Services.
+Involved in CICD (Continuous Integration /Continuous Deployment) automation project.  	
+Responsible for weekly report geneation for project progress.
