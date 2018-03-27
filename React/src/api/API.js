@@ -15,8 +15,8 @@ export const doLogin = (payload) =>
         },
         body: JSON.stringify(payload)
     }).then(res => {
-        //  console.log("sending JSON from API");
-        // //res.status = 201;
+         console.log("sending JSON from API");
+        res.status = 201;
         // return res.json();
         return res.status;
     })
@@ -58,6 +58,23 @@ export const fetchProject = (payload) =>
             console.log("This is error");
             return error;
         });
+
+export const searchProject = (payload) =>
+    fetch(`${api}/users/searchProject`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).then(function(resp) { return resp.json(); })
+
+        .catch(error => {
+            console.log("This is error");
+            return error;
+        });
+
+
 
 
 export const fetchprojectusers = (payload) =>
@@ -121,6 +138,35 @@ export const HireFreelancer = (payload) =>
             console.log("This is error");
             return error;
         });
+
+export const makePayment = (payload) =>
+    fetch(`${api}/users/makePayment`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).then(function(resp) { return resp.json() })
+        .catch(error => {
+            console.log("This is error");
+            return error;
+        });
+
+export const addMyMoney = (payload) =>
+    fetch(`${api}/users/addMyMoney`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).then(function(resp) { return resp.json() })
+        .catch(error => {
+            console.log("This is error");
+            return error;
+        });
+
 
 export const addskillsToProject = (payload) =>
     fetch(`${api}/users/addskillsToProject`, {

@@ -12,7 +12,7 @@ function handle_request(msg, callback) {
 
         coll.find().toArray(function (err, user1) {
             if (user1) {
-                console.log("inside call back" + user1)
+                console.log("inside call back" + JSON.stringify(user1))
                 res.code = "200";
                 res.value = user1;
                 callback(null, res);

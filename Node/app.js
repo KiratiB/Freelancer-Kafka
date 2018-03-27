@@ -4,25 +4,53 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors');
-
 var index = require('./routes/index');
 var users = require('./routes/users');
+var expressSessions = require("express-session")
+var mongoStore = require("connect-mongo")(expressSessions);
+var passport = require('passport');
 
 var app = express();
 
 //Enable CORS
-app.use(cors());
+var corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(bodyParser.json({limit: '50mb'}));
+//app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+app.use(cors(corsOptions))
+app.use(cookieParser('CMPE273_passport'));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+
+// var mongoSessionURL = "mongodb://root:kirati@ds243059.mlab.com:43059/freelancer";
+var mongoSessionURL = "mongodb://localhost:27017/freelancer";
+app.use(expressSessions({
+    secret: "CMPE273_passport",
+    resave: false,
+    saveUninitialized: true,
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 6 * 1000,
+    store: new mongoStore({
+        url: mongoSessionURL,
+        collection: 'sessions'
+    })
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
@@ -47,5 +75,7 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.json('error');
 });
+
+app.set('secret', 'CMPE273_passport');
 
 module.exports = app;

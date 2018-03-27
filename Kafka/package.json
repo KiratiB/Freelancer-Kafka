@@ -11,8 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "kafka-node": "^2.2.3",
-    "passport": "^0.4.0",
     "mongodb": "^2.2.31",
-    "passport-local": "^1.0.0"
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-authenticate": "^1.2.0"
   }
 }

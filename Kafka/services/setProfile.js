@@ -20,7 +20,7 @@ function handle_request(msg, callback) {
                     "phonenumber": msg.req.phonenumber,
                     "aboutme": msg.req.aboutme,
                     "profileFile": msg.req.profileFile,
-                    "userskills": msg.req.userskills
+                    "userskills": msg.req.userskills,
                 }
             },
             {upsert:true} ,

@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import "./../components/CSS/navbar.css";
+import {connect} from 'react-redux';
 import {Link,withRouter} from "react-router-dom";
+import {requestLogout} from "./../actions/index";
 
 class Navbarmain extends Component {
 
     handleLogout(){
-        localStorage.removeItem('jwtToken');
-        localStorage.removeItem('userId');
-        this.props.history.push('/login');
+        this.props.dispatch(this.props.requestLogout(this.props))
+            .then(() => this.props.history.push('/login'));
     }
 
     handlePostProject(){
@@ -93,4 +94,9 @@ class Navbarmain extends Component {
     }
 }
 
-export default withRouter(Navbarmain);
+const mapDispatchToProps = (dispatch) => {
+    let actions = { requestLogout };
+    return { ...actions, dispatch };
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(Navbarmain));

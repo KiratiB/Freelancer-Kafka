@@ -10,6 +10,7 @@ const headers = {
     'Accept': 'application/json'
 };
 
+axios.defaults.withCredentials = true;
 
 export function authenticateUser(userdata) {
     return function (dispatch) {
@@ -75,6 +76,29 @@ export function setProfile(profiledata){
     }
 }
 
+export function requestAuth(state){
+    return function (dispatch) {
+        let temp = {
+        };
+        return axios.post("http://localhost:3001/users/auth", temp).then((response) => {
+            dispatch({type:"authSuccess", payload: response.data})
+        }).catch((err) => {
+            dispatch({type:"authFailed", payload: err.response.data})
+        })
+    }
+}
+
+export function requestLogout(state){
+    return function (dispatch) {
+        return axios.get("http://localhost:3001/users/logout").then((response) => {
+            dispatch({type:"logoutSuccess", payload: response.data})
+        }).catch((err) => {
+            dispatch({type:"logoutFailed", payload: err.response.data})
+        })
+    }
+}
+
+
 export const PROJECTS_DETAILS='PROJECTS_DETAILS';
 
 export function projectdetails(data) {
@@ -93,3 +117,15 @@ export function userdetails(data) {
         data,
     };
 }
+
+
+// payment details
+export const PAYMENT_DETAILS='PAYMENT_DETAILS';
+
+export function paymentDetails(data) {
+    return {
+        type: 'PAYMENT_DETAILS',
+        data,
+    };
+}
+

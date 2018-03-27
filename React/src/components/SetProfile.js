@@ -12,6 +12,7 @@ import Select from 'react-select';
 import { Dropdown } from 'semantic-ui-react';
 import Dropdowncustom from "./Dropdowncustom";
 import {Typeahead} from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 class SetProfile extends Component {
 
@@ -29,9 +30,17 @@ class SetProfile extends Component {
                 userSkilstring: '',
                 userskills: ''
             },
+            isProfileFile:true,
+            isName:true,
+            isEmail:true,
+            isPhonenumner:true,
+            isAboutMe:true,
+            isSkills:true,
             skills:[],
             isSetProfile : false,
             messageProfile : "",
+            isFirstnameEmpty:'',
+            isLastnameEmpty:''
         };
 
         this.handleOptionSelected = this.handleOptionSelected.bind(this);
@@ -47,6 +56,51 @@ class SetProfile extends Component {
                     });
                 }
             );
+    }
+
+    validateProfileImage() {
+        if (this.state.profileData.profileFile != '')
+        {
+            return (true)
+        }
+        return (false)
+    }
+    validateName() {
+        if (this.state.profileData.firstname != '' && this.state.profileData.lastname != '')
+        {
+            return (true)
+        }
+        return (false)
+    }
+    validateEmail() {
+        var emailId = this.state.profileData.email;
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailId))
+        {
+            return (true)
+        }
+        return (false)
+    }
+    validatePhonenumber() {
+        var phoneno = /^\d{10}$/;
+        if (this.state.profileData.phonenumber.match(phoneno))
+        {
+            return (true)
+        }
+        return (false)
+    }
+    validateAboutMe() {
+        if (this.state.profileData.aboutme != '')
+        {
+            return (true)
+        }
+        return (false)
+    }
+    validateSkills(){
+        if (this.state.profileData.userskills.length > 2)
+        {
+            return (true)
+        }
+        return (false)
     }
 
     handleChange = (e) => {
@@ -71,13 +125,47 @@ class SetProfile extends Component {
 
                         }
                     });
+                    this.setState({isProfileFile: true});
                 }
             });
     };
 
+    validateForm(){
+
+    }
 
     handleSetProfile = () => {
-        this.props.dispatch(this.props.setProfile(this.state.profileData));
+        if(this.validateProfileImage() == true) {
+            if(this.validateName() == true) {
+                if(this.validateEmail() == true) {
+                    if(this.validatePhonenumber() == true) {
+                        if(this.validateAboutMe() == true) {
+                            if(this.validateSkills() == true) {
+                                this.props.dispatch(this.props.setProfile(this.state.profileData));
+                            }
+                            else{
+                                this.setState({isSkills: false})
+                            }
+                        }
+                        else{
+                            this.setState({isAboutMe: false})
+                        }
+                    }
+                    else{
+                        this.setState({isPhonenumner: false})
+                    }
+                }
+                else{
+                    this.setState({isEmail: false})
+                }
+            }
+            else {
+                this.setState({isName: false})
+            }
+        }
+        else {
+            this.setState({isProfileFile: false})
+        }
     }
 
     componentDidUpdate() {
@@ -88,16 +176,7 @@ class SetProfile extends Component {
         console.log("inside component will render");
         if (nextProps.isSetProfile === true) {
             nextProps.history.push('/dashboard');
-                 // var payload = {userId: localStorage.getItem("userId"), skills: this.state.userskills};
-                 // console.log(payload);
-                 // API.addskillsToUser(payload)
-                 //     .then(
-                 //         (response) => {
-                 //             if (response === 201) {
-                 //                 nextProps.history.push('/dashboard');
-                 //             }
-                 //         }
-                 //     );
+
              }
     }
     handleOptionSelected(option){
@@ -107,17 +186,6 @@ class SetProfile extends Component {
                 userskills:option
             }
          });
-        // var abc = option;
-        // var result = abc.map(function(val) {
-        //     return val.name;
-        // }).join(',');
-        // this.setState({
-        //     profileData: {
-        //         ...this.state.profileData,
-        //         userSkilstring:result
-        //     }
-        // });
-        //console.log(option);
     }
 
     render(){
@@ -135,6 +203,7 @@ class SetProfile extends Component {
                         </div>
                         <div className="text-left">
                             <h6 className="">PROFILE IMAGE</h6>
+                            { this.state.isProfileFile ? null : <div className="text-input-error-wrapper text-left errormessage">Please Add Your Profile Image.</div>}
                             <div className="form-group">
                                 <input
                                     className="form-control"
@@ -147,6 +216,7 @@ class SetProfile extends Component {
                         </div>
                         <div className="text-left">
                             <h6 className="">FULL NAME</h6>
+                            { this.state.isName ? null : <div className="text-input-error-wrapper text-left errormessage">Please Enter Full Name.</div>}
                             <div className="row">
                                 <div className="col">
 
@@ -162,6 +232,9 @@ class SetProfile extends Component {
                                                firstname: event.target.value
                                            }
                                            });
+                                           }}
+                                           onFocus={(event) => {
+                                               this.setState({isName: true});
                                            }}
 
                                     />
@@ -179,6 +252,9 @@ class SetProfile extends Component {
                                                    }
                                                });
                                            }}
+                                           onFocus={(event) => {
+                                               this.setState({isName: true});
+                                           }}
 
                                     />
                                 </div>
@@ -187,6 +263,7 @@ class SetProfile extends Component {
                         </div>
                         <div className="text-left">
                             <h6 className="">EMAIL</h6>
+                            { this.state.isEmail ? null : <div className="text-input-error-wrapper text-left errormessage">Please Enter Valid Email Address.</div>}
                             <div className="form-group">
                                 <input
                                 className="form-control"
@@ -203,12 +280,16 @@ class SetProfile extends Component {
                                 }
                                 });
                                 }}
+                                onFocus={(event) => {
+                                    this.setState({isEmail: true});
+                                }}
                                 />
                             </div>
                             <br/>
                         </div>
                         <div className="text-left">
                             <h6 className="">PHONE NO</h6>
+                            { this.state.isPhonenumner ? null : <div className="text-input-error-wrapper text-left errormessage">Please Enter Valid PhoneNumber.</div>}
                             <div className="form-group">
                                 <input
                                     className="form-control"
@@ -225,12 +306,16 @@ class SetProfile extends Component {
                                             }
                                         });
                                     }}
+                                    onFocus={(event) => {
+                                        this.setState({isPhonenumner: true});
+                                    }}
                                 />
                             </div>
                             <br/>
                         </div>
                         <div className="text-left">
                             <h6 className="">About Me</h6>
+                            { this.state.isAboutMe ? null : <div className="text-input-error-wrapper text-left errormessage">Please Enter You Bio.</div>}
                             <div className="form-group">
                                 <textarea rows="3"
                                           className="form-control"
@@ -247,12 +332,16 @@ class SetProfile extends Component {
                                                   }
                                               });
                                           }}
+                                          onFocus={(event) => {
+                                              this.setState({isAboutMe: true});
+                                          }}
                                 />
                             </div>
                             <br/>
                         </div>
                         <div className="text-left">
                             <h4 className="">What skills are required?</h4>
+                            { this.state.isSkills ? null : <div className="text-input-error-wrapper text-left errormessage">Please Select Atleast 3 skills.</div>}
                             <Typeahead
                                 clearButton
                                 labelKey="name"
@@ -260,6 +349,9 @@ class SetProfile extends Component {
                                 options={this.state.skills}
                                 placeholder="What Skills are required? "
                                 onChange={this.handleOptionSelected}
+                                onFocus={(event) => {
+                                    this.setState({isSkills: true});
+                                }}
                             />
                         </div>
                         <div className="text-left">

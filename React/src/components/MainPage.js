@@ -14,15 +14,15 @@ class MainPage extends Component {
                         <img src = "./Images/logoNav.png" className="customImage" alt="BV" ></img>
                     </div>
                     <ul className="nav navbar-nav ml-auto btn-toolbar">
-                        <li><button className="btn btn-outline-success" onClick={() => {
+                        <li className="float-left"><button className="btn btn-outline-success" onClick={() => {
                             this.props.history.push("/login")
                         } }>Login</button></li>
-                        <li><button className="btn btn-outline-success" onClick={() => {
+                        <li className="float-left"><button className="btn btn-outline-success" onClick={() => {
                             this.props.history.push("/signup")
                         } }>Sign Up</button></li>
                     </ul>
                 </nav>
-                <div ><img className="bgImage" src="./Images/bg.jpg.png" /></div>
+                <div className="img-fluid" ><img className="bgImage" src="./Images/bg.jpg.png" /></div>
             </div>
         );
     }

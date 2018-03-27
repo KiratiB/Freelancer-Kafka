@@ -3,7 +3,8 @@ import {PROJECTS_DETAILS} from "./../actions/index"
 const defaultState = {
     isProjectAdded: false,
     message: "",
-    projectId : ""
+    projectId : "",
+    paymentDetails:""
 }
 export default function projectReducer (state = defaultState, action) {
     const newState = {...state};
@@ -27,6 +28,10 @@ export default function projectReducer (state = defaultState, action) {
 
         case 'USER_DETAILS':
             newState.selecteduserDetails = action.data;
+            return newState;
+
+        case 'PAYMENT_DETAILS':
+            newState.paymentDetails = action.data;
             return newState;
 
         default:

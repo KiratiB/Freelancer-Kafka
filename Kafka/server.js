@@ -13,6 +13,8 @@ var fetchBiddedProjects = require('./services/fetch_bidded_projects');
 var hireFreelancer = require('./services/hire_freelancer');
 var editProfile = require('./services/edit_profile');
 var addSolution = require('./services/add_solution');
+var makePayment = require('./services/make_payment');
+var addMyMoney= require('./services/add_my_money');
 
     var topic_name = 'login_topic';
     var consumer = connection.getConsumer(topic_name);
@@ -141,6 +143,7 @@ var addSolution = require('./services/add_solution');
             });
         }
 
+
         if (data.data.topic_c == "project_topic_response" && data.data.key == "fetch_all_project_users") {
             fetchAllProjectUsers.handle_request(data.data, function (err, res) {
                 console.log('after project handle' + res);
@@ -241,8 +244,7 @@ var addSolution = require('./services/add_solution');
             });
         }
 
-        if (data.data.topic_c == "project_topic_response" && data.data.key == "edit_profile") {
-            console.log("abcd");
+        if (data.data.topic_c == "project_topic_response" && data.data.key == "edit_Profile") {
             editProfile.handle_request(data.data, function (err, res) {
                 console.log('after profile handle' + res);
                 var payloads = [
@@ -264,6 +266,46 @@ var addSolution = require('./services/add_solution');
 
         if (data.data.topic_c == "project_topic_response" && data.data.key == "add_solution") {
             addSolution.handle_request(data.data, function (err, res) {
+                console.log('after profile handle' + res);
+                var payloads = [
+                    {
+                        topic: data.replyTo,
+                        messages: JSON.stringify({
+                            correlationId: data.correlationId,
+                            data: res
+                        }),
+                        partition: 0
+                    }
+                ];
+                producer.send(payloads, function (err, data) {
+                    console.log(data);
+                });
+                return;
+            });
+        }
+
+        if (data.data.topic_c == "project_topic_response" && data.data.key == "make_payment") {
+            makePayment.handle_request(data.data, function (err, res) {
+                console.log('after profile handle' + res);
+                var payloads = [
+                    {
+                        topic: data.replyTo,
+                        messages: JSON.stringify({
+                            correlationId: data.correlationId,
+                            data: res
+                        }),
+                        partition: 0
+                    }
+                ];
+                producer.send(payloads, function (err, data) {
+                    console.log(data);
+                });
+                return;
+            });
+        }
+
+        if (data.data.topic_c == "project_topic_response" && data.data.key == "add_My_Money") {
+            addMyMoney.handle_request(data.data, function (err, res) {
                 console.log('after profile handle' + res);
                 var payloads = [
                     {

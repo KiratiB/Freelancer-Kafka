@@ -18,6 +18,7 @@ import MyPostedProject from "./MyPostedProject";
 import MainPage from "./MainPage";
 import ReleventProject from "./ReleventProject";
 import PaymentGateway from "./PaymentGateway";
+import TransactionManager from "./TransactionManager";
 
 class NewerHomePage extends Component {
 
@@ -32,7 +33,7 @@ class NewerHomePage extends Component {
         return (
             <div className="container-fluid">
                 <Route exact path="/" render={() => (
-                    <div><Message message="You have landed on main page !!"/></div>
+                    <MainPage/>
                 )}/>
 
 
@@ -127,6 +128,11 @@ class NewerHomePage extends Component {
                 <Route exact path="/paymentGateway" render={() => (
                     <div>
                         <PaymentGateway />
+                    </div>
+                )}/>
+                <Route exact path="/transactionManager" render={() => (
+                    <div>
+                        <TransactionManager />
                     </div>
                 )}/>
 

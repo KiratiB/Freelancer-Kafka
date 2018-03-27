@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import * as API from "../api/API";
-import {authenticateUser} from "../actions/index";
+import {authenticateUser,requestAuth } from "../actions/index";
 import "./CSS/general.css";
 import LogoImage from "./LogoImage";
 import {Link,withRouter} from "react-router-dom";
@@ -31,22 +31,15 @@ class Login extends Component {
 
 
     componentWillMount(){
-        if(localStorage.getItem('jwtToken')){
-            this.props.history.push('/dashboard');
-        }
+        this.props.dispatch(this.props.requestAuth(this.state.userdata))
+            .then(() => this.props.isAuthentic ? this.props.history.push('/dashboard') : this.props.history.push('/login'));
     }
 
     componentWillReceiveProps(nextProps){
         if(nextProps.isLoggedIn === true){
             nextProps.history.push('/dashboard');
-            //this.context.history.push('/signup');
         }
     }
-
-    componentDidMount(){
-
-    }
-
 
     render() {
         //console.log(this.props);
@@ -129,14 +122,15 @@ class Login extends Component {
 
 const mapDispatchToProps = (dispatch)=>{
     console.log("mapDispatchToProps");
-    let actions = {authenticateUser};
+    let actions = {authenticateUser,requestAuth};
     return { ...actions, dispatch };
 }
 
 const mapStateToProps = (state) => {
     return {
         isLoggedIn: state.actionReducer.isLoggedIn,
-        message: state.actionReducer.message
+        message: state.actionReducer.message,
+        isAuthentic: state.actionReducer.isAuthentic,
     }
 }
 

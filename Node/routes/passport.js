@@ -1,6 +1,8 @@
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
-var mongoURL = "mongodb://localhost:27017/login";
+// var mongoURL = "mongodb://root:kirati@ds243059.mlab.com:43059/freelancer";
+var mongoURL = "mongodb://localhost:27017/freelancer";
+
 var kafka = require('./kafka/client');
 
 module.exports = function(passport) {
@@ -16,7 +18,8 @@ module.exports = function(passport) {
             else
             {
                 if(results.code == 200){
-                    console.log("Kirati");
+                    console.log(results);
+                    // console.log("HERE PASSPORT");
                     done(null,results);
                 }
                 else {
@@ -25,4 +28,12 @@ module.exports = function(passport) {
             }
         });
     }));
+
+    passport.serializeUser(function(user, done) {
+        done(null, user);
+    });
+
+    passport.deserializeUser(function(user, done) {
+        done(null, user);
+    });
 };

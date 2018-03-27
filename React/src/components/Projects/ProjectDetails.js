@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-//import * as API from "../api/API";
-//import {authenticateUser} from "../actions/index";
-//import "./CSS/general.css";
 import {userdetails} from "./../../actions/index"
 import {Link,withRouter} from "react-router-dom";
 import projectReducer from "../../reducers/projectReducer";
@@ -20,9 +17,6 @@ import HiredFreelancerPanel from "./../HiredFreelancerPanel";
 
 class Projectdetails extends Component {
 
-    // static propTypes = {
-    //     handleSubmit: PropTypes.func.isRequired
-    // };
     constructor(props) {
         super(props);
         this.state = {
@@ -33,9 +27,33 @@ class Projectdetails extends Component {
             bid_period: '',
             isUserEmployer: false,
             projectStatus: '',
-            isuserHiredFreelancer: false
+            isuserHiredFreelancer: false,
+            sortedAsc:true,
+            sortup :"glyphicon glyphicon-collapse-down",
+            sortdown :"glyphicon glyphicon-collapse-up",
         };
+        this.handleSort = this.handleSort.bind(this);
+
     }
+
+    handleSort(){
+        if(this.state.sortedAsc){
+            this.state.users = [].concat(this.state.users)
+                .sort((a, b) => a.bid_value > b.bid_value)
+        }else{
+            this.state.users = [].concat(this.state.users)
+                .sort((a, b) => a.bid_value < b.bid_value)
+        }
+        this.setState({
+            sortedAsc:!this.state.sortedAsc
+        })
+    }
+
+    componentWillReceiveProps(){
+        this.props.history.push("/detailedprojectview");
+    }
+
+
     componentDidMount(){
         var payload ={project_id : this.props.projectdetails._id}
         API.fetchprojectusers(payload)
@@ -81,15 +99,9 @@ class Projectdetails extends Component {
             })
         }
 
-
-
-
-
         console.log(this.state.isUserEmployer);
     }
-
-    display_users()
-    {
+    display_users() {
 
         const item = this.state.users.map((users,index) =>{
 
@@ -118,8 +130,13 @@ class Projectdetails extends Component {
                                  API.HireFreelancer(payload)
                                      .then(
                                          (response) => {
+                                             alert("Email sent");
+                                             var payload ={project_id : this.props.projectdetails._id}
+                                             this.setState({
+                                                 projectStatus: "Hiring"
+                                             });
 
-                                             this.props.history.push("/detailedprojectview");
+                                             // this.props.history.push("/detailedprojectview");
                                          });
                              }}
                              >Hire</button></div> : null}
@@ -139,7 +156,9 @@ class Projectdetails extends Component {
                             <div className="col-sm-2 border">Email:</div>
                             <div className="col-sm-3 border">About user:</div>
                             {/*<div className="col-sm-3 border">Skills:</div>*/}
-                            <div className="col-sm-1 border">Bid Value</div>
+                            <div className="col-sm-1 border"><a  onClick = {this.handleSort}>
+                                Bid Value<span className = {this.state.sortedAsc ? this.state.sortup : this.state.sortdown}/>
+                            </a></div>
                             <div className="col-sm-1 border">Bid Period</div>
                             { this.state.isUserEmployer ? <div className="col-sm-1 border"></div> : null}
                         </div>
@@ -149,11 +168,7 @@ class Projectdetails extends Component {
             </div>
         )
     }
-
     render(){
-
-
-
 
         return <div>
             <Navbarmain/>
@@ -224,15 +239,7 @@ class Projectdetails extends Component {
                                                     bid_period: event.target.value
                                                 });
                                             }}
-                                            // value={this.state.userdata.password}
-                                            // onChange={(event) => {
-                                            //     this.setState({
-                                            //         userdata: {
-                                            //             ...this.state.userdata,
-                                            //             password: event.target.value
-                                            //         }
-                                            //     });
-                                            // }}
+
                                         />
                                     </div>
                                     <div className="form-group">
@@ -313,7 +320,8 @@ const mapStateToProps = (state) => {
 
 function mapDispatchToProps(dispatch) {
     return {
-        userdetails : (data) => dispatch(userdetails(data))
+        userdetails : (data) => dispatch(userdetails(data)),
+        // projectdetails : (data) => dispatch(projectdetails(data)),
     };
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Projectdetails));

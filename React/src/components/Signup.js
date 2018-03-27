@@ -13,7 +13,7 @@ import { Route, withRouter } from 'react-router-dom';
 const history = createBrowserHistory()
 
 class Signup extends Component {
-
+//{"email":"geeta@abc.com","username":"geeta","password":"geeta123","role":"Work"}
     state = {
         userdata: {
             email: '',
@@ -77,26 +77,6 @@ class Signup extends Component {
                 //this.state.usernameValid = false;
                 this.setState({usernameValid: false})
             }
-
-            //this.context.history.push('/setprofile');
-
-            // API.doSignUp(this.state.userdata)
-            //     .then((status) => {
-            //         if (status === 201) {
-            //             console.log('SignUp DONE')
-            //             this.setState({
-            //                 isLoggedIn: true,
-            //                 message: "Welcome to my App..!!"
-            //             });
-            //
-            //         } else if (status === 401) {
-            //             console.log('Check NODE')
-            //             this.setState({
-            //                 isLoggedIn: false,
-            //                 message: "Wrong username or password. Try again..!!",
-            //             });
-            //         }
-            //     });
         }
         else {
             this.setState({emailValid: false})

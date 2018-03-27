@@ -100,7 +100,27 @@ table {
 }
 
 .gridFont{
+    display: inline-block;
     padding-top: 3px;
     font-size: 10px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Arial, sans-serif;
+    color:#888888;
 }
+
+.gridFontLeft{
+    alignment: left;
+    display: inline-block;
+    padding-top: 3px;
+    font-size: 10px;
+    font-family: Arial, sans-serif;
+    color:#888888;
+}
+
+.gridHeader{
+    display: inline-block;
+    padding-top: 3px;
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+}
+
+

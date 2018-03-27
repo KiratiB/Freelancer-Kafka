@@ -34,7 +34,8 @@ const defaultState = {
     isLoggedIn: false,
     message: "",
     userId: "",
-    userDetails: ""
+    userDetails: "",
+    isAuthentic: false
 }
 
 
@@ -60,6 +61,22 @@ export default function actionReducer (state = defaultState, action) {
             newState.message = "The email and password you entered did not match our records. Please double-check and try again.";
             newState.userId = "";
             return newState;
+
+        case 'authSuccess':
+             newState.isAuthentic= true;
+             return newState;
+
+        case 'authFailed':
+              newState.isAuthentic= false;
+              return newState;
+
+        case 'logoutSuccess':
+              newState.isAuthentic= false;
+              return newState;
+
+        case 'logoutFailed':
+              newState.isAuthentic= true;
+              return newState;
 
 
         default:

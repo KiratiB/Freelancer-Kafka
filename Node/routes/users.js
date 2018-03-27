@@ -9,6 +9,7 @@ var fs = require('fs-extra');
 var passport = require('passport');
 require('./passport')(passport);
 var kafka = require('./kafka/client');
+var nodemailer = require('nodemailer');
 
 
 var storage = multer.diskStorage({
@@ -27,10 +28,28 @@ router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
 
+router.post('/auth', function(req, res){
+    console.log("INSIDE AUTH");
+    if (req.isAuthenticated()) {
+        res.status(200).send({ success: true, message: 'User already logged in!' });
+    } else {
+        res.status(401).send({ success: false, message: 'Authentication failed.' });
+    }
+});
+
+router.get('/logout', function(req, res){
+    console.log("Inside LogOut");
+    req.logout();
+    req.session.destroy();
+    res.status(200).send({ success: true, message: 'User successfully logged out!' });
+});
+
 router.post('/doLogin', function (req, res, next) {
 
     //start kirati changes
     passport.authenticate('login', function(err, user) {
+        // console.log("AFTER PASSPORT ");
+        //
         if(err) {
             return res.status(500).json({message:"Login Error", success: false});
         }
@@ -38,79 +57,36 @@ router.post('/doLogin', function (req, res, next) {
         if(!user || user.code === 401 ) {
             return res.status(401).json({message:"Login Error", success: false});
         }
-        console.log("------------------------------");
-        console.log("LOGIN USER" +  JSON.stringify(user));
-        console.log("LOGIN USER" +  user.userId);
-        console.log("------------------------------");
-        //kirati start
-        var sessiondata = {firstName : 'kirati',
-            lastName : 'bhuva',
-            email : 'kirati123@abc.com'};
-        var token = jwt.sign(sessiondata , 'shhhhhh' , { expiresIn : 60*60 });
-        //console.log(results[0].data.userid);
-        console.log("--------------------------");
-        console.log("user details" + user.userdetails);
-        return res.status(201).json({message: "Login successful",
-            success: true,
-            userId : user.userId,
-            token: token,
-            userDetails: user.userDetails
+
+        else {
+            req.logIn(req.body, function(err) {
+                // console.log(err);
+                if(err) {
+                    return res.status(401).send({ success: false, message: 'The email and password you entered did not match our records. Please double-check and try again.' });
+                }
+                // var data = {
+                //     userId : 1
+                // };
+                // var token = jwt.sign(data, req.app.get('secret'), {
+                //     expiresIn : 60*60
+                // });
+                var sessiondata = {firstName : 'kirati',
+                                    lastName : 'bhuva',
+                                        email : 'kirati123@abc.com'};
+                var token = jwt.sign(sessiondata , 'shhhhhh' , { expiresIn : 60*60 });
+                    // console.log("--------------------------");
+                    // console.log("user details" + user.userdetails);
+                    return res.status(201).json({message: "Login successful",
+                        success: true,
+                        userId : user.userId,
+                        token: token,
+                        userDetails: user.userDetails
         });
-        //req.session.user = user.username;
-        // console.log(req.session.user);
-        // console.log("session initilized");
-        // return res.status(201).send({username:"test"});
+            });
+        }
+
     })(req, res);
-    //end kirati changes
-     /**console.log("Inside DoLogin");
-     var reqUsername = req.body.userID;
-     var reqPassword = req.body.password;
 
-     // console.log(reqUsername);
-     // console.log(reqPassword);
-
-    //var query = "select * from user where password = 'jjjjjjj' and (username = 'deep@deep.com' OR email = 'deep@deep.com')";
-    var query = "select * from user where  username = '" + reqUsername+ "' or  email = '" + reqUsername+ "'" ;
-     //console.log("Query is :" + query);
-
-    //kirati start
-    pool.fetchData(function(err,results){
-        if(err){
-            res.status(401).json({message:"Login Error", success: false});
-        }
-        else
-        {
-            //console.log("Results: " + results.username);
-            if(results.length > 0){
-                    // console.log("Plain password :"  + reqPassword);
-                    // console.log("Encrypted password : " + results[0].password);
-                    bcrypt.compare(reqPassword, results[0].password, function(err, matches){
-                    if (matches){
-                        //console.log("valid Login");
-                        var sessiondata = {firstName : results[0].firstname,
-                        lastName : results[0].lastName,
-                        email : results[0].email};
-                        var token = jwt.sign(sessiondata , 'shhhhhh' , { expiresIn : 60*60 });
-                        //console.log(results[0].data.userid);
-                        res.status(201).json({message: "Login successful",
-                                        success: true,username : reqUsername,
-                                        userId : results[0].userid,
-                                        token: token,
-                                      });
-                    }
-                    else{
-                        //console.log("Password not matched");
-                        res.status(401).json({message:"Login Error", success: false});
-                    }
-                })
-            }
-            else {
-
-                //console.log("Invalid Login");
-                res.status(401).json({message:"Login Error", success: false});
-            }
-        }
-    },query);**/
 });
 
 router.post('/doSignUp', function (req, res, next) {
@@ -120,22 +96,22 @@ router.post('/doSignUp', function (req, res, next) {
     var reqUsername = req.body.username;
 
     kafka.make_request('signup_topic',{"req": req.body , "topic_c" : "signup_topic_response"}, function(err,results){
-        console.log('in result');
-        console.log(results);
+        // console.log('in result');
+        // console.log(results);
         var sessiondata = {firstName : 'kirati',
             lastName : 'bhuva',
             email : 'kirati123@abc.com'};
         var token = jwt.sign(sessiondata , 'shhhhhh' , { expiresIn : 60*60 });
         if(err){
-            console.log("ERROR KIRATI");
+            // console.log("ERROR KIRATI");
             done(err,{});
         }
         else
         {
             if(results.code == 200){
-                console.log("----------------------------");
-                console.log(results);
-                console.log("SIGNUP ID: " + results.userId);
+                // console.log("----------------------------");
+                // console.log(results);
+                // console.log("SIGNUP ID: " + results.userId);
                 res.status(200).json({message: "Sign up successful", userId: results.userId,token: token, success: true});
             }
             else {
@@ -189,18 +165,18 @@ router.post('/addProject', function (req, res, next) {
     //kafka start
 
     kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response", "key": "post_project"}, function(err,results){
-        console.log('in result');
-        console.log(results);
+        // console.log('in result');
+        // console.log(results);
         if(err){
-            console.log("ERROR KIRATI");
+            // console.log("ERROR KIRATI");
             done(err,{});
         }
         else
         {
             if(results.code == 200){
-                console.log("----------------------------");
-                console.log(results);
-                console.log("SIGNUP ID: " + results.userId);
+                // console.log("----------------------------");
+                // console.log(results);
+                // console.log("SIGNUP ID: " + results.userId);
                 res.status(201).json({message: "Project Added Successfully", success:true});
             }
             else {
@@ -250,6 +226,16 @@ router.post('/setProfile', function (req, res, next) {
         {
             if(results.code == 200){
                 console.log("USER DETAILS** : " + results.userDetails);
+                    if (results.userDetails.profileFile !== null) {
+                        var buffer = fs.readFileSync(results.userDetails.profileFile);
+                        var bufferBase64 = new Buffer(buffer);
+                        results.userDetails.encodeImage = bufferBase64;
+                    } else {
+                        //console.log(obj);
+                        var buffer = fs.readFileSync("./uploads/default/default_img.png");
+                        var bufferBase64 = new Buffer(buffer);
+                        results.userDetails.encodeImage = bufferBase64;
+                    }
                 res.status(201).json({message: "Profile Set Successfully", success:true, userDetails: results.userDetails });
             }
             else {
@@ -305,6 +291,43 @@ router.post('/fetchProject', function (req, res, next) {
     //kafka start
 
     kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "fetch_all_projects"}, function(err,results){
+        // console.log('in result Fetch Project');
+        // console.log(results);
+        if(err){
+            console.log("ERROR KIRATI");
+            done(err,{});
+        }
+        else
+        {
+            if(results.code == 200){
+                if(results.value.length != 0) {
+                    results.value.forEach(function (obj) {
+                        if (obj.userDetails.profileFile !== ' ' && obj.userDetails.profileFile !== '') {
+                            // console.log("PATH : " + obj.userDetails.profileFile);
+                            var buffer = fs.readFileSync(obj.userDetails.profileFile);
+                            var bufferBase64 = new Buffer(buffer);
+                            obj.userDetails.encodeImage = bufferBase64;
+                        } else {
+                            var buffer = fs.readFileSync("./uploads/default/default_img.png");
+                            var bufferBase64 = new Buffer(buffer);
+                            obj.userDetails.encodeImage = bufferBase64;
+                        }
+                    });
+                }
+                // console.log(results);
+                res.status(201).json(results);
+            }
+            else {
+                res.status(401).json({message: "Error in fetching projects", success: false});
+            }
+        }
+    });
+
+});
+
+router.post('/searchProject', function (req, res, next) {
+
+    kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "search_project"}, function(err,results){
         console.log('in result Fetch Project');
         console.log(results);
         if(err){
@@ -359,7 +382,7 @@ router.post('/fetchprojectusers', function (req, res, next) {
 
     //kafka start
     kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "fetch_all_project_users"}, function(err,results){
-        console.log('in result Fetch all users');
+        // console.log('in result Fetch all users');
         //console.log(results);
         if(err){
             console.log("ERROR KIRATI");
@@ -372,7 +395,7 @@ router.post('/fetchprojectusers', function (req, res, next) {
                 //image start
                 if(results.users.length !== 0 && results.users[0] != '') {
                     results.users.forEach(function (obj) {
-                        console.log("Inside this");
+                        // console.log("Inside this");
                         if (obj.profileFile !== null) {
                             //console.log("PATH : " + obj.profileFile);
                             var buffer = fs.readFileSync(obj.profileFile);
@@ -492,8 +515,84 @@ router.post('/hireFreelancer', function (req, res, next) {
     console.log(req.body.project_id);
     console.log(req.body.fl_id);
 
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'kiratib216@gmail.com',
+            pass: 'Jayu@216'
+        }
+    });
+
+    var mailOptions = {
+        from: 'kiratib216@gmail.com',
+        to:'srichetaruj@gmail.com',
+        subject: 'Hey Babes',
+        text: '' + 'Help available for the below issue '+ "id:"+ req.body._id+"topic:" + req.body.topic+ "req.body.issuecontent"+req.body.issuecontent
+
+    };
+
+
     // kafka start
     kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "hire_freelancer" }, function(err,results){
+        if(err){
+            console.log("ERROR KIRATI");
+            done(err,{});
+        }
+        else
+        {
+            if(results.code == 200){
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        console.log(error);
+                        // res.status(400).send({message:"Success"});
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                        // res.status(200).send({message:"Success"});
+                    }
+                });
+                return res.status(201).json(results);
+            }
+            else {
+                return res.status(401).json({message: "Bid add Failed", success: false});
+            }
+        }
+    });
+    // kafka end
+});
+
+router.post('/makePayment', function (req, res, next) {
+
+    console.log("Inside User hire FL");
+    console.log(req.body);
+
+    // kafka start
+    kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "make_payment" }, function(err,results){
+        if(err){
+            console.log("ERROR KIRATI");
+            done(err,{});
+        }
+        else
+        {
+            if(results.code == 200){
+                return res.status(201).json(results);
+            }
+            else {
+                return res.status(401).json({message: "Bid add Failed", success: false});
+            }
+        }
+    });
+    // kafka end
+});
+
+router.post('/addMyMoney', function (req, res, next) {
+
+    console.log("Inside User hire FL");
+    console.log(req.body.project_id);
+    console.log(req.body.fl_id);
+
+    // kafka start
+    kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "add_My_Money" }, function(err,results){
         if(err){
             console.log("ERROR KIRATI");
             done(err,{});
@@ -519,15 +618,16 @@ router.post('/fetchmybids', function (req, res, next) {
     //kafka start
 
     kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "fetch_bidded_projects"}, function(err,results){
-        console.log('in result Fetch Posted Project Users');
-        console.log(results);
+        // console.log('in result Fetch Posted Project Users');
+        // console.log(results);
         if(err){
-            console.log("ERROR KIRATI");
+            // console.log("ERROR KIRATI");
             done(err,{});
         }
         else
         {
             if(results.code == 200){
+
                 //console.log(results.value)
                 // var myJSON = JSON.stringify(results.value);
                 res.status(201).json(results.value);
@@ -593,10 +693,6 @@ router.post('/fetchmyPostedprojects', function (req, res, next) {
     // },query);
 });
 
-
-
-
-
 router.post('/fetchskills', function (req, res, next) {
 
     // console.log("Inside fetchskils");
@@ -648,28 +744,29 @@ router.post('/addskillsToProject', function (req, res, next) {
 
 
     //33
-        //[ { id: 2, name: '.Net' }, { id: 6, name: 'ReactJS' } ]
+    //[ { id: 2, name: '.Net' }, { id: 6, name: 'ReactJS' } ]
 
 
     skills.map((skill,index) => {
-        var query = "insert into project_skill(project_id, skill_id) values(" + reqProjectId + "," + skill.id + ");"
-        pool.fetchData(function(err,results){
-            //console.log('---------------------------------------');
-            if(err){
-                res.status(401).json({message: "Error",success: false});
-            }
-            else if(index !== skills.length -1)
-            {
-                console.log(results);
-            }
-            else
-            {
-                res.status(201).json(results);
-            }
-        },query);
-    }
-)
+            var query = "insert into project_skill(project_id, skill_id) values(" + reqProjectId + "," + skill.id + ");"
+            pool.fetchData(function(err,results){
+                //console.log('---------------------------------------');
+                if(err){
+                    res.status(401).json({message: "Error",success: false});
+                }
+                else if(index !== skills.length -1)
+                {
+                    console.log(results);
+                }
+                else
+                {
+                    res.status(201).json(results);
+                }
+            },query);
+        }
+    )
 });
+
 router.post('/addskillsToUser', function (req, res, next) {
 
     var reqUserId = req.body.userId;
@@ -699,15 +796,11 @@ router.post('/addskillsToUser', function (req, res, next) {
     )
 });
 
-
 router.post('/fetchUserDetails', function (req, res, next) {
 
-var requserId =  req.body.userid;
-//console.log(requserId);
-
-    console.log("Inside Uesr Details");
-    var query = "select * from user where userid = " + requserId ;
-    console.log("Query is :" + query);
+    console.log("Inside User hire FL");
+    console.log(req.body.project_id);
+    console.log(req.body.fl_id);
 
     // kafka start
     kafka.make_request('project_topic',{"req": req.body , "topic_c" : "project_topic_response","key": "edit_Profile" }, function(err,results){
@@ -718,23 +811,25 @@ var requserId =  req.body.userid;
         else
         {
             if(results.code == 200){
-                console.log(results);
-                //image start
-                // if(results.length != 0) {
-                //         //console.log("Inside this");
-                //         if (results[0].profileFile !== null) {
-                //             var buffer = fs.readFileSync(results[0].profileFile);
-                //             var bufferBase64 = new Buffer(buffer);
-                //             results[0].encodeImage = bufferBase64;
-                //         } else {
-                //             //console.log(obj);
-                //             var buffer = fs.readFileSync("./uploads/default/default_img.png");
-                //             var bufferBase64 = new Buffer(buffer);
-                //             results[0].encodeImage = bufferBase64;
-                //         }
-                // }
-                //image end
+                if(results.value.length != 0) {
+                    results.value.forEach(function (obj) {
+                        //console.log("Inside this");
+                        if (obj.profileFile !== null) {
+                            var buffer = fs.readFileSync(obj.profileFile);
+                            var bufferBase64 = new Buffer(buffer);
+                            obj.encodeImage = bufferBase64;
+                        } else {
+                            //console.log(obj);
+                            var buffer = fs.readFileSync("./uploads/default/default_img.png");
+                            var bufferBase64 = new Buffer(buffer);
+                            obj.encodeImage = bufferBase64;
+                        }
+                    });
+                }
+                //console.log(results);
                 return res.status(201).json(results);
+
+
             }
             else {
                 return res.status(401).json({message: "Bid add Failed", success: false});
@@ -742,45 +837,7 @@ var requserId =  req.body.userid;
         }
     });
     // kafka end
-
-    // pool.fetchData(function(err,results){
-    //     if(err){
-    //         res.status(401).json({message: "Error in profile set",success: false});
-    //     }
-    //     else
-    //     {
-    //         //kirati start
-    //         var userdetails = results;
-    //         console.log("Inside 2 results");
-    //         console.log(userdetails);
-    //         var qry = "select * from user_skill where user_id = " + requserId.toString() ;
-    //         console.log("Query is :" + query);
-    //         pool.fetchData(function(err,results){
-    //             //console.log('---------------------------------------');
-    //             if(err){
-    //                 res.status(401).json({message: "Error",success: false});
-    //             }
-    //             else
-    //             {
-    //                 var userskills = results;
-    //                 console.log(userskills);
-    //                 res.status(201).json({userdetails: userdetails,userskills: userskills });
-    //             }
-    //         },qry);
-    //     }
-    // },query);
-
-
 });
-
-// router.post('/uploadFile', upload.single('myfile'), function (req, res, next){
-//     upload(req, res, function (err) {
-//         if (err) {
-//             return res.status(501).send({error:err});
-//         }
-//         res.json({originalname :req.file.originalname, uploadname :req.file.filename});
-//     })
-// })
 
 router.post('/uploadFile', function (req, res) {
     upload(req, res, function (err) {
@@ -791,7 +848,6 @@ router.post('/uploadFile', function (req, res) {
         res.status(200).send(JSON.stringify({filename : req.file.filename, originalname :req.file.originalname,success: true}))
     })
 })
-
 
 router.post('/downloadFile', function(req, res) {
     console.log(req.body.filepath);

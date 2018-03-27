@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import * as API from "./../api/API";
 import fileDownload  from 'js-file-download'
 import {Link,withRouter} from "react-router-dom";
+import {projectdetails, userdetails} from "../actions";
+import {connect} from "react-redux";
+import {paymentDetails} from "../actions";
 
 
 class EmployerPanel extends Component {
@@ -48,7 +51,14 @@ class EmployerPanel extends Component {
                             <br/>
                             <div className="col-sm-6">
                                 <button type="button" className="btn btn-info btn-lg" onClick={() => {
-                                    this.props.history.push('/paymentGateway');
+                                    this.props.history.push('/transactionManager');
+                                    var payload = {
+                                        project_details:this.props.project_details,
+                                        freelancerId : this.props.project_details.hired_freelancer._id ,
+                                        bid_value : this.props.project_details.hired_freelancer.bid_value
+                                    }
+                                    this.props.paymentDetails(payload);
+                                    this.props.history.push('/transactionManager');
                                 }
                                 }><span className="glyphicon glyphicon-usd"></span> Make Payment
                                 </button>
@@ -63,4 +73,11 @@ class EmployerPanel extends Component {
     }
 }
 
-export default withRouter(EmployerPanel);
+function mapDispatchToProps(dispatch) {
+    return {
+        paymentDetails : (data) => dispatch(paymentDetails(data)),
+    };
+}
+
+
+export default withRouter(connect(null ,mapDispatchToProps)(EmployerPanel));
