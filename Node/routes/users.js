@@ -11,7 +11,6 @@ require('./passport')(passport);
 var kafka = require('./kafka/client');
 var nodemailer = require('nodemailer');
 
-
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/doc')

@@ -20,7 +20,7 @@ function handle_request(msg, callback) {
             function (err, user){
                 if(user)
                 {
-                    console.log("YO YO " + user);
+                    // console.log("YO YO " + user);
                     res.code = "200";
                     res.value = "Solution updated successfully";
                     callback(null, res);

@@ -38,7 +38,7 @@ app.use(expressSessions({
     resave: false,
     saveUninitialized: true,
     duration: 30 * 60 * 1000,
-    activeDuration: 5 * 6 * 1000,
+    activeDuration: 15 * 30 * 1000,
     store: new mongoStore({
         url: mongoSessionURL,
         collection: 'sessions'

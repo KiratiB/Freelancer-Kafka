@@ -98,7 +98,7 @@ class HiredFreelancerPanel extends Component {
                                     API.addmySolution(payload)
                                         .then(
                                             (response) => {
-                                                console.log("YO YO");
+                                                // console.log("YO YO");
                                                 console.log(response);
                                                 if(response.code == 200)
                                                 {
