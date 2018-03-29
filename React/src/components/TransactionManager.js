@@ -6,7 +6,8 @@ import {Link,withRouter} from "react-router-dom";
 import * as API from "./../api/API";
 import Navbarmain from "./Navbarmain";
 import Collapsible from 'react-collapsible';
-import {Pie} from 'react-chartjs-2';
+import {Pie} from 'react-chartjs';
+import {userdetails} from "../actions";
 
 class TransactionManager extends Component {
 
@@ -21,7 +22,10 @@ class TransactionManager extends Component {
                 month:'',
                 year:''
             },
+            isPayDisable: true,
             transaction_history:[],
+            add:0,
+            deduct:0,
             message: false,
             data : {
                 labels: [
@@ -43,6 +47,76 @@ class TransactionManager extends Component {
         };
     }
 
+    componentWillMount() {
+        var payload ={userid: localStorage.getItem("userId")};
+        var self = this;
+        API.fetchUserDetails(payload)
+            .then(
+                (response) =>{
+
+                    if(response.value.length != 0) {
+                        response.value.map(user => {
+
+                            var arrayBufferView = new Uint8Array(user.encodeImage.data);
+                            var blob = new Blob([arrayBufferView], {type: "image/jpg"});
+                            var urlCreator = window.URL || window.webkitURL;
+                            var imageUrl = urlCreator.createObjectURL(blob);
+                            user.bloburl = imageUrl;
+                            console.log(imageUrl);
+
+                        });
+                    }
+
+                    this.setState({
+                        userDetails : response.value[0]
+                    });
+                    console.log("Inside response");
+                    console.log(this.state.userdetails);
+
+                    if(this.props.paymentDetails != "")
+                    {
+                        self.setState({
+                            isPayEnable: true
+                        })
+                    }
+
+                    var add = 0;
+                    var deduct = 0;
+
+                    if(response.value[0].transaction_history.length > 0){
+                        response.value[0].transaction_history.map(transaction => {
+                            if(transaction.action == 'DEDUCT'){
+                                deduct = deduct + transaction.money;
+                            }
+                            if(transaction.action == 'ADD'){
+                                add = add + transaction.money;
+                            }
+                        });
+                        self.setState({add:add});
+                        self.setState({deduct:deduct});
+                        self.setState({
+                            data: {
+                                ...self.state.data,
+                                ...self.state.datasets,
+                                data: [10 , 12]
+                            }
+                        });
+                    }
+                }
+            );
+        console.log("ADD");
+        console.log(this.state.add);
+        console.log(this.state.deduct);
+        this.setState({
+            data: {
+                ...this.state.data,
+                ...this.state.datasets,
+                data: [10 , 12]
+            }
+        });
+
+
+    }
 
 
     handlePay = () => {
@@ -70,7 +144,7 @@ class TransactionManager extends Component {
 
         if(this.state.userDetails.myFund < transaction.money)
         {
-            this.state.message = true
+            this.setState({message: true})
         }
         else{
             var payload ={
@@ -92,20 +166,65 @@ class TransactionManager extends Component {
     }
 
     componentDidMount(){
-        var payload ={userid: localStorage.getItem("userId")};
-        API.fetchUserDetails(payload)
-            .then(
-                (response) =>{
-                    console.log(response);
-                    this.setState({
-                        userDetails : response.value[0]
-                    });
-                });
+        // var payload ={userid: localStorage.getItem("userId")};
+        // API.fetchUserDetails(payload)
+        //     .then(
+        //         (response) =>{
+        //             console.log(response);
+        //             this.setState({
+        //                 userDetails : response.value[0]
+        //             });
+        //         });
+
+
+
+
+
     }
 
     render(){
+
+
+        var options={
+            legend: {
+                display: true,
+            }
+        }
+        const pieData = [
+            {
+                value: this.state.add,
+                color: "#46BFBD",
+                highlight: "#5AD3D1",
+                label: "Incoming Funds"
+            },
+            {
+                value: this.state.deduct,
+                color:"#F7464A",
+                highlight: "#FF5A5E",
+                label: "Incoming Funds"
+            }
+        ];
+
+        // const item = this.state.userDetails.transaction_history.map((transaction,index) =>{
+        //
+        //     return(
+        //         <div className="container-fluid small">
+        //             <div className="row text-center">
+        //                 <div className="col-sm-1 border gridFont">{(index + 1)}</div>
+        //                 <div className="col-sm-2 border gridFont">{transaction.project_name}</div>
+        //                 <div className="col-sm-1 border gridFont">{transaction.money}</div>
+        //                 <div className="col-sm-1 border gridFont">{transaction.action}</div>
+        //             </div>
+        //         </div>
+        //
+        //     )
+        // });
+
         return(
+
+
             <div>
+                {console.log(this.state.deduct)}
                 <Navbarmain/>
                 <div className="container-fluid">
                     <div class="row">
@@ -113,18 +232,33 @@ class TransactionManager extends Component {
                             {this.state.message ? <div className="alert alert-success text-danger small" role="alert">
                                 You do not have sufficient funds, Please add money.
                             </div> : null}
-                            <div>Current Balance : {this.state.userDetails.myFund}</div>
-                            <div className="col-lg-12"><button className="btn-success btn-lg btn btn-lg"
+                            <div className="col-lg-12"><button className="btn-success btn-lg btn btn-lg" hidden={this.state.isPayDisable}
                                                                onClick={()=>{
                                                                    this.handlePay()
                                                                }}>PAY</button>
                             </div>
                             <div>
-                                <Pie data={this.state.data}/>
+                                <Pie data={pieData}  width="400" height="200"/>
+                                {/*<Pie data={this.state.data}/>*/}
                             </div>
+                                <div className="container-fluid bg-light">
+                                    <div className="text-center">
+                                        <div className="col-sm-1 border gridHeader">No</div>
+                                        <div className="col-sm-2 border gridHeader">Project Name</div>
+                                        <div className="col-sm-1 border gridHeader">Money</div>
+                                        <div className="col-sm-1 border gridHeader">Action</div>
+                                    </div>
+                                </div>
+                                {/*{item}*/}
                         </div>
 
                         <div className="col-md-3">
+                            <div><h2>Current Balance : {this.state.userDetails.myFund}</h2></div>
+                            <div className="col-lg-12"><button className="btn-success btn-lg btn btn-lg" hidden={this.state.isPayDisable}
+                                                               onClick={()=>{
+                                                                   this.handlePay()
+                                                               }}>PAY</button>
+                            </div>
                                 <button data-toggle="collapse" data-target="#demo" className="btn-lg btn-primary">Add Money</button>
                                 <div id="demo" className="collapse">
                                     <div className='row'>
@@ -190,6 +324,9 @@ class TransactionManager extends Component {
                                                                     userId: localStorage.getItem("userId"),
                                                                     amount: parseInt(this.state.creditCardDetails.amount) + parseInt(this.state.userDetails.myFund)
                                                                 }
+                                                                {
+                                                                    this.setState({message: false})
+                                                                }
                                                                 API.addMyMoney(payload)
                                                                     .then(
                                                                         (response) => {
@@ -217,6 +354,7 @@ class TransactionManager extends Component {
                         </div>
 
                     </div>
+
                 </div>
             </div>
         )

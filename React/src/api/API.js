@@ -1,6 +1,6 @@
 import axios from 'axios';
 // const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:3001';
-const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://ec2-18-219-160-31.us-east-2.compute.amazonaws.com:3001';
+const api = 'http://ec2-18-219-160-31.us-east-2.compute.amazonaws.com:3001';
 
 const headers = {
     'Accept': 'application/json'

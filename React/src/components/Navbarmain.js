@@ -41,7 +41,9 @@ class Navbarmain extends Component {
                             <li className="nav-item dropdown" >
                                 <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="userProfile"><span className="glyphicon glyphicon-user"></span></a>
                                 <ul className="dropdown-menu">
-                                <li><a href="userProfile">Profile</a></li>
+                                <li><a onClick={() => {this.props.history.push('/userProfile');}} >Profile</a></li>
+                                    <li><a onClick={() => {this.props.history.push('/transactionManager');}} >Manage Funds</a></li>
+
                                 <li><a onClick={() => {this.handleLogout()} }>Logout</a> </li>
                                 </ul>
                             </li>
