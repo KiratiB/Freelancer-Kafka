@@ -62,8 +62,6 @@ function handle_request(msg, callback) {
                                             });
                                         }
                                         else{
-
-                                            
                                             res.code = "401";
                                             res.value = "Internal Server Error";
                                             callback(null, res);
