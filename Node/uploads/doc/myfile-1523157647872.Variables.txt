@@ -1,0 +1,123 @@
+Variables:
+
+variables are used to hold any type of information, that can be manipulated or used by computer program.
+Variable name should be accurately assigned so that anybody can interpret it easily. To assign value to 
+the variable, = sign is used.In Javascript, var keyword is used to declare variable.
+Example: var name = "Kirati Bhuva"
+
+
+Objects:
+An object is an non-premitive kind of data type. Object can hold multiple values like it's properties and methods. 
+Object is used to store data in a structured way, and can represent real world objects, like a cat,car,rectangle.
+The name property can be any string, including an empty string and values can be any value like string, number, and null, 
+but it cannot be undefined. The object's properties can be defined even after you start using the object.
+Example:var Object Name = property1:value, property2:value, property3:value};
+
+Functions:
+A function can be a piece of code which can be exicuted when it is called or referenced.It can also be used to do repetative tasks.
+It can have multiple parameters. It can also return one value. A function without any name can also be define. It is called anonymous 
+function.It must be assigned to a variable.
+Example: function functionName() {
+  			//code to be executed
+		  }
+Everytime the function is called, all of the code will be executed.
+
+Events:
+JavaScript Event system, is one of the building block of an interactive web page.
+An event is something that happens with or on web page like a mouse click, a keystroke, a web page loading etc.
+JavaScript has some predefined events that can occur. 
+Everytime the event occurs, Event handler contains the code to be executed.
+
+
+Arrays:
+The array is special type of variable which can store many values within it.
+Each value of that variable is associated with index starting from 0.
+Example : var arrayName = [element0, element1,....,elementn];
+It can store multiple values with different datatypes.
+
+Inheritance:
+Inheritance can be achived using objectin JavaScript.
+Each object has a property taht holds link to another object which is called its prototype
+
+Conditions:
+Conditions are used to execute different actions based on different conditions.
+In JavaScript, there are if-else conditional statements to control the program flow.
+It includes the following forms:
+	1) if statement
+	2) if..else statement
+	3) if..else if..else statement
+If there are large number of else if condition, an alternative is to use switch statement.
+To check the conditions, conditional operators are used like "==","<",">" which returns boolean value.
+
+
+Regular Expressions:
+Regular Expressions are used to find certain words or patterns inside the string.
+There are two ways to implement regular expression:
+1) Using literal syntax like var regularExpression = /pattern/
+2) Using RegExp() constructor, to dynamically construct the regular expession. Example : var RegularExpression  =  new RegExp("pattern");
+var myRE = /regexp/;  
+
+
+Strict Mode:
+ECMAScript 5 introduced strict mode to JavaScript. 
+The intent is to allow developers to opt-in to a “better” version of JavaScript, where some of the most common  errors are handled differently. 
+For example with strict mode, the following errors can be prevented.
+Prevents accidental globals,
+writing to a read-only property,
+No duplicates.
+"use strict;" is used to declare strict mode.
+ 
+Errors:
+Javascript is a loosely typed language, Sometime runtime errors can occur.
+It provides error handling mechanism to catch thode errors using try-catch-finally block.
+Try block wrap code that may throw error at runtime
+Catch block provides the code to be executed when error occur in try block.
+Finally block will always occurs irrespective of any error occurs or not.
+Throw is used to raise custom error.
+
+Type Conversions:
+In JavaScript, data types are used to declare type of data.Sometime JavaScript will convert many values automatically.
+But it is best practice to manually convert values between types in oder to achieve expected output.
+String(), Number(), Boolean(), and Object() functions can be used to convert data from one type to another.
+
+
+JSON:
+JSON stands for JavaScript Object Notation.It is used for lightweight data exchange between different systems.
+IT is very simple and compact.
+
+
+
+
+HTML:
+Local Storage:
+Local storage items are stored in key-value pairs, so for every item that we wish to store on the client, 
+Key is needed—this key should be directly related to the data that it is stored alongside.
+It comes with 2 versions:
+1) Session Storage
+2) Local Storage
+
+Media()
+HTML5 standards supports MP4, Ogg, WebM videos and MP3, WAV and Ogg audio.
+A video can be added to a page using the <video> element of HTML5. <source> element allows you to specify multiple formats of the video from which the browser can choose the one which is supported. 
+An audio can be added to a page using the <audio> element of HTML5. <source> and other elements for audio work the same way as they work for <video>.
+If the browser does not support the audio/video, the text between the <audio></audio> or <video></video> will be displayed.
+
+Geolocation:
+It represents an object able to obtain the position of the device.It gives web content access to the location 
+of the device.
+Geolocation.getCurrentPosition determines the device's current location and gives back a position object with the data.
+
+
+HTML Input:
+It specifies the input area where user can add data.
+Type attribute specifies the typwof data entered in the area.
+If type = "button" , it will create button.Similarly, it will create radio buttons and checkboxes on
+type = "radio" and type = "checkbox" respectively.
+Input type = “email” is for entering email ID, which validates that the entered input has the character ‘@’ within it, 
+otherwise it shows a label describing the error in the email ID. 
+
+
+
+
+
+
