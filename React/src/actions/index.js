@@ -4,8 +4,9 @@ export const  LOGIN_ERROR = 'LOGIN_ERROR';
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const SIGNUP_ERROR = 'SIGNUP_ERROR';
 
-const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:3001';
-
+// const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:3001';
+var dnsString = "http://ec2-18-219-160-31.us-east-2.compute.amazonaws.com"
+// var dnsString = "http://localhost:3001"
 const headers = {
     'Accept': 'application/json'
 };
@@ -14,7 +15,7 @@ axios.defaults.withCredentials = true;
 
 export function authenticateUser(userdata) {
     return function (dispatch) {
-        return axios.post("http://localhost:3001/users/doLogin", userdata)
+        return axios.post(dnsString + "/users/doLogin", userdata)
             .then((res) => {
                 console.log("Inside authentcateuser " + res)
                 if (res.data.token) {
@@ -33,7 +34,7 @@ export function authenticateUser(userdata) {
 
 export function registerUser(userdata) {
     return function (dispatch) {
-        return axios.post("http://localhost:3001/users/doSignUp", userdata)
+        return axios.post(dnsString + "/users/doSignUp", userdata)
             .then((res) => {
                 if (res.data) {
                     sessionStorage.setItem('jwtToken', res.data.token);
@@ -51,7 +52,7 @@ export function registerUser(userdata) {
 
 export function addProject(projectdata){
     return function (dispatch) {
-        return axios.post("http://localhost:3001/users/addProject", projectdata)
+        return axios.post(dnsString + "/users/addProject", projectdata)
             .then((res) => {
                 if (res.data) {
                     dispatch({type: "PROJECTADD_SUCCESS", payload: res.data})
@@ -65,7 +66,7 @@ export function addProject(projectdata){
 export function setProfile(profiledata){
     console.log("Inside setProfile");
     return function (dispatch) {
-        return axios.post("http://localhost:3001/users/setProfile", profiledata)
+        return axios.post(dnsString + "/users/setProfile", profiledata)
             .then((res) => {
                 if (res.data) {
                     dispatch({type: "PROFILE_SUCCESS", payload: res.data})
@@ -80,7 +81,7 @@ export function requestAuth(state){
     return function (dispatch) {
         let temp = {
         };
-        return axios.post("http://localhost:3001/users/auth", temp).then((response) => {
+        return axios.post(dnsString + "/users/auth", temp).then((response) => {
             dispatch({type:"authSuccess", payload: response.data})
         }).catch((err) => {
             dispatch({type:"authFailed", payload: err.response.data})
@@ -90,7 +91,7 @@ export function requestAuth(state){
 
 export function requestLogout(state){
     return function (dispatch) {
-        return axios.get("http://localhost:3001/users/logout").then((response) => {
+        return axios.get(dnsString + "/users/logout").then((response) => {
             dispatch({type:"logoutSuccess", payload: response.data})
         }).catch((err) => {
             dispatch({type:"logoutFailed", payload: err.response.data})

@@ -14,7 +14,7 @@ var app = express();
 
 //Enable CORS
 var corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: '*',
     credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
@@ -31,8 +31,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 
-// var mongoSessionURL = "mongodb://root:kirati@ds243059.mlab.com:43059/freelancer";
-var mongoSessionURL = "mongodb://localhost:27017/freelancer";
+var mongoSessionURL = "mongodb://root:kirati@ds243059.mlab.com:43059/freelancer";
+// var mongoSessionURL = "mongodb://localhost:27017/freelancer";
 app.use(expressSessions({
     secret: "CMPE273_passport",
     resave: false,

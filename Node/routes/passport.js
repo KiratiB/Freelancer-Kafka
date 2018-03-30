@@ -1,7 +1,7 @@
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
-// var mongoURL = "mongodb://root:kirati@ds243059.mlab.com:43059/freelancer";
-var mongoURL = "mongodb://localhost:27017/freelancer";
+var mongoURL = "mongodb://root:kirati@ds243059.mlab.com:43059/freelancer";
+// var mongoURL = "mongodb://localhost:27017/freelancer";
 
 var kafka = require('./kafka/client');
 

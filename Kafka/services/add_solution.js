@@ -1,6 +1,7 @@
 var mongo = require("./mongo");
 var ObjectID = require('mongodb').ObjectID;
-var mongoURL = "mongodb://localhost:27017/freelancer";
+// var mongoURL = "mongodb://localhost:27017/freelancer";
+var mongoURL = "mongodb://root:kirati@ds243059.mlab.com:43059/freelancer";
 
 function handle_request(msg, callback) {
 
