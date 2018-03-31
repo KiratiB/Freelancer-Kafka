@@ -16,6 +16,10 @@ var addSolution = require('./services/add_solution');
 var makePayment = require('./services/make_payment');
 var addMyMoney= require('./services/add_my_money');
 
+
+
+
+
     var topic_name = 'login_topic';
     var consumer = connection.getConsumer(topic_name);
 
