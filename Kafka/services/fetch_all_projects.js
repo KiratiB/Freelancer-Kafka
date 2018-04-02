@@ -10,7 +10,7 @@ function handle_request(msg, callback) {
         console.log('Connected to mongo at: ' + mongoURL);
         var coll = mongo.collection('project');
 
-        coll.find().toArray(function (err, user1) {
+        coll.find({project_status: "Open"}).toArray(function (err, user1) {
             if (user1) {
                 console.log("inside call back" + JSON.stringify(user1))
                 res.code = "200";
