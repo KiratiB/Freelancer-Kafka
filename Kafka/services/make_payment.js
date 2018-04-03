@@ -12,10 +12,10 @@ function handle_request(msg, callback) {
         console.log("Inside MAKE PAYMENT");
         var coll = mongo.collection('userA');
         var o_id = new ObjectID(msg.req.employer_id);
-        console.log(o_id);
+        // console.log(o_id);
         coll.find({ '_id': o_id }).toArray(function (err, user1) {
             if (user1) {
-                console.log(user1);
+                // console.log(user1);
                 var history = user1[0].transaction_history;
                 msg.req.transaction['action'] = 'DEDUCT';
                 history.push(msg.req.transaction);
@@ -32,7 +32,7 @@ function handle_request(msg, callback) {
                         console.log(f_id);
                         coll.find({ '_id': f_id }).toArray(function (err, user3) {
                             if (user3) {
-                                console.log(user3);
+                                // console.log(user3);
                                 var historyF = user3[0].transaction_history;
                                 msg.req.transaction.action = 'ADD';
                                 historyF.push(msg.req.transaction);
@@ -48,12 +48,25 @@ function handle_request(msg, callback) {
                                     }, function (err, user4) {
                                         if(user4)
                                         {
-                                            coll.find({ '_id': o_id },function(err, user5) {
+                                            console.log(o_id);
+                                            coll.find({ '_id': o_id }).toArray(function(err, user5) {
                                                 if (user5) {
-                                                    console.log("FINAL LOOP" + user5);
-                                                    res.code = "200";
-                                                    res.value = user5;
-                                                    callback(null, res);
+
+                                                    var col2 = mongo.collection('project');
+                                                    var ou_id = new ObjectID(msg.req.transaction.project_id);
+                                                    console.log("ou_id : " + ou_id);
+                                                    col2.update(
+                                                        { '_id': ou_id},
+                                                        { $set: {
+                                                                "project_status":"Closed"
+                                                            }
+                                                        }
+                                                        , function(err, user6){
+                                                            res.code = "200";
+                                                            res.value = user5[0];
+                                                            callback(null, res);
+                                                        });
+                                                    console.log(user5[0]);
                                                 }
                                                 else {
                                                     res.code = "401";
