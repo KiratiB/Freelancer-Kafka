@@ -525,9 +525,9 @@ router.post('/hireFreelancer', function (req, res, next) {
 
     var mailOptions = {
         from: 'kiratib216@gmail.com',
-        to:'srichetaruj@gmail.com',
-        subject: 'Hey Babes',
-        text: '' + 'Help available for the below issue '+ "id:"+ req.body._id+"topic:" + req.body.topic+ "req.body.issuecontent"+req.body.issuecontent
+        to: req.body.fl_email,
+        subject: 'Congratulations!!',
+        text: 'You are Hired'
 
     };
 
@@ -574,6 +574,7 @@ router.post('/makePayment', function (req, res, next) {
         else
         {
             if(results.code == 200){
+                console.log(results);
                 return res.status(201).json(results);
             }
             else {

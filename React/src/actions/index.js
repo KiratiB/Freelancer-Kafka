@@ -4,7 +4,7 @@ export const  LOGIN_ERROR = 'LOGIN_ERROR';
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const SIGNUP_ERROR = 'SIGNUP_ERROR';
 
-// const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:3001';
+// const api = 'http://localhost:3001';
 var dnsString = "http://ec2-18-219-160-31.us-east-2.compute.amazonaws.com:3001"
 // var dnsString = "http://localhost:3001"
 const headers = {
