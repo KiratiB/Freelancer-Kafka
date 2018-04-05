@@ -12,17 +12,18 @@ class EmployerPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            submissionDetails:{
                 comments:'',
                 SubmissionSolutionFile:'',
-                isMessage: false
-            }
+                isMessage: false,
+            isSubmissionDetailsAvailable: false
         };
     }
 
-    componentDidMount(){
-
-
+    componentWillMount(){
+        if(this.props.project_details.submissionDetails !== undefined) {
+            this.setState({comments: this.props.project_details.submissionDetails.comments})
+            this.setState({isSubmissionDetailsAvailable : true})
+        }
     }
 
     render() {
@@ -33,7 +34,9 @@ class EmployerPanel extends Component {
                         <br/>
                         <div className="row text-center">
                             <div className="col-sm-6">
-                                <button type="button" className="btn btn-info btn-lg" onClick={() => {
+                                <button type="button" className="btn btn-info btn-lg"
+                                        disabled={!this.state.isSubmissionDetailsAvailable}
+                                        onClick={() => {
                                     var payload ={filepath : this.props.project_details.submissionDetails.SubmissionSolutionFile}
                                     API.downloadFile(payload)
                                         .then((response) => {
@@ -47,9 +50,10 @@ class EmployerPanel extends Component {
                                 }
                                 }><span className="glyphicon glyphicon-download-alt"></span> Download Solution
                                 </button>
+                                <div className="alert alert-secondary">Comments: {this.state.comments || "No Comments Yet"}</div>
                             </div>
                             <br/>
-                            <div className="col-sm-6">
+                            {this.props.project_details.project_status == "Closed" ? null :  <div className="col-sm-6">
                                 <button type="button" className="btn btn-info btn-lg" onClick={() => {
                                     this.props.history.push('/transactionManager');
                                     var payload = {
@@ -62,7 +66,8 @@ class EmployerPanel extends Component {
                                 }
                                 }><span className="glyphicon glyphicon-usd"></span> Make Payment
                                 </button>
-                            </div>
+                            </div>}
+
                             <br/>
                         </div>
                         <br/>

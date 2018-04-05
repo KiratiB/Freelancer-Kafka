@@ -16,7 +16,7 @@ class InternalDashboard extends Component {
             ResultAvailable: false,
             allProjects:[],
             currentPage: 1,
-            ItemPerPage: 1,
+            ItemPerPage: 5,
 
         };
         this.handleClick = this.handleClick.bind(this);
@@ -173,7 +173,7 @@ class InternalDashboard extends Component {
                                         }}>Open</button>
                                         <button className="dropdown-item"  onClick={() => {
                                             var projects = this.state.allProjects.filter((project) => {
-                                                return (project.project_details[0].project_status == "Close")
+                                                return (project.project_details[0].project_status == "Closed")
                                             })
                                             this.setState({
                                                 myBids: projects
