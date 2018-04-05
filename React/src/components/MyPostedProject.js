@@ -17,7 +17,7 @@ class MyPostedProject extends Component {
             ResultAvailable: false,
             allProjects:'',
             currentPage: 1,
-            ItemPerPage: 1,
+            ItemPerPage: 5,
 
         };
         this.handleClick = this.handleClick.bind(this);
@@ -174,7 +174,7 @@ class MyPostedProject extends Component {
                                         }}>Open</button>
                                         <button className="dropdown-item"  onClick={() => {
                                             var projects = this.state.allProjects.filter((project) => {
-                                                return (project.project_status == "Close")
+                                                return (project.project_status == "Closed")
                                             })
                                             this.setState({
                                                 myPostedProjects: projects

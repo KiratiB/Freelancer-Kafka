@@ -21,7 +21,7 @@ class Myproject extends Component {
             userId: '',
             projects: [],
             currentPage: 1,
-            ItemPerPage: 1,
+            ItemPerPage: 10,
             allProjects:'',
             searchBy: 'project'
 
@@ -177,35 +177,35 @@ class Myproject extends Component {
                                                })
                                             }}
                                        placeholder="Search project..."/>
-                                <div className="dropdown ">
-                                    <button className="btn form-control btn-lg btn-outline-primary dropdown-toggle"
-                                            // onClick={() => {
-                                            //     this.setState({
-                                            //         projects: this.state.allProjects
-                                            //     })
-                                            // }}
-                                            type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        Project Status
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button className="dropdown-item" onClick={() => {
-                                            var projects = this.state.allProjects.filter((project) => {
-                                                return (project.project_status == "Open")
-                                            })
-                                            this.setState({
-                                                projects: projects
-                                            })
-                                        }}>Open</button>
-                                        <button className="dropdown-item"  onClick={() => {
-                                            var projects = this.state.allProjects.filter((project) => {
-                                                return (project.project_status == "Close")
-                                            })
-                                            this.setState({
-                                                projects: projects
-                                            })
-                                        }}>closed</button>
-                                    </ul>
-                                </div>
+                                {/*<div className="dropdown ">*/}
+                                    {/*<button className="btn form-control btn-lg btn-outline-primary dropdown-toggle"*/}
+                                            {/*// onClick={() => {*/}
+                                            {/*//     this.setState({*/}
+                                            {/*//         projects: this.state.allProjects*/}
+                                            {/*//     })*/}
+                                            {/*// }}*/}
+                                            {/*type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">*/}
+                                        {/*Project Status*/}
+                                    {/*</button>*/}
+                                    {/*<ul className="dropdown-menu" aria-labelledby="dropdownMenu1">*/}
+                                        {/*<button className="dropdown-item" onClick={() => {*/}
+                                            {/*var projects = this.state.allProjects.filter((project) => {*/}
+                                                {/*return (project.project_status == "Open")*/}
+                                            {/*})*/}
+                                            {/*this.setState({*/}
+                                                {/*projects: projects*/}
+                                            {/*})*/}
+                                        {/*}}>Open</button>*/}
+                                        {/*<button className="dropdown-item"  onClick={() => {*/}
+                                            {/*var projects = this.state.allProjects.filter((project) => {*/}
+                                                {/*return (project.project_status == "Close")*/}
+                                            {/*})*/}
+                                            {/*this.setState({*/}
+                                                {/*projects: projects*/}
+                                            {/*})*/}
+                                        {/*}}>closed</button>*/}
+                                    {/*</ul>*/}
+                                {/*</div>*/}
                             </div>
                         </div>
                     </div>
@@ -214,9 +214,6 @@ class Myproject extends Component {
                 <br/>
                 <h3>Projects And Contents</h3>
                 <br/>
-
-
-
                 {this.display_projects()}
             </div>
         )
