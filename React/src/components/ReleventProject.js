@@ -18,11 +18,14 @@ class ReleventProject extends Component {
         this.state = {
             userId: '',
             projects: [],
+            currentPage: 1,
+            ItemPerPage: 10,
             Skills:'',
             commonSkills:[],
             allProjects:'',
             searchBy: 'project'
         };
+        this.handleClick = this.handleClick.bind(this);
 
         var payload ={id:'admin@gmail.com'};
         API.fetchProject(payload)
@@ -33,7 +36,7 @@ class ReleventProject extends Component {
                         response.value.p_skills = project.projectSkills;
                         project.projectSkills = project.projectSkills.map(function(val) {
                             return val.name;
-                        }).join(',');
+                        }).join(', ');
                     })
 
                     response.value.map(project =>{
@@ -57,10 +60,18 @@ class ReleventProject extends Component {
             );
 
     }
-
+    handleClick(event) {
+        this.setState({
+            currentPage: Number(event.target.id)
+        });
+    }
     display_projects()
     {
 
+        const { projects, currentPage, ItemPerPage } = this.state;
+        const indexOfLastTodo = currentPage * ItemPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - ItemPerPage;
+        const currentTodos = projects.slice(indexOfFirstTodo, indexOfLastTodo);
         var userSkills = [];
         var userDetails = this.props.userDetailsL || this.props.userDetailsS;
         //console.log(userDetails);
@@ -72,10 +83,10 @@ class ReleventProject extends Component {
 
         console.log(this.state.projects);
 
-        const item = this.state.projects.map((projects,index) =>{
+        const item = currentTodos.map((projects,index) =>{
 
             var commonSkills =[];
-            var projectSkills = projects.projectSkills.split(',');
+            var projectSkills = projects.projectSkills.split(', ');
             console.log(index);
             console.log(projectSkills);
 
@@ -94,15 +105,15 @@ class ReleventProject extends Component {
             return(
 
                 <div className="container-fluid small">
-                    {commonSkills.length < 1 ? null : <div className="row text-center">
-                        <div className="col-sm-1 border ">{(index + 1)}</div>
+                    {commonSkills.length < 3 ? null : <div className="row text-center">
+
                         <div className="col-sm-2 border">
                             <button className = "btn btn-link"
                                     onClick={() => {
                                         this.props.projectdetails(projects);
                                         this.props.history.push("/detailedprojectview");
                                     }}> {projects.project_name}</button></div>
-                        <div className="col-sm-2 border">{projects.description}</div>
+                        <div className="col-sm-3 border">{projects.description}</div>
                         <div className="col-sm-1 border">{projects.projectSkills}</div>
                         <div className="col-sm-1 border">{projects.budget_range_start}$ - {projects.budget_range_end}$</div>
                         <div className="col-sm-2 border"><button className = "btn btn-link"
@@ -121,13 +132,28 @@ class ReleventProject extends Component {
                 </div>
             )
         });
+        const pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(projects.length / ItemPerPage); i++) {
+            pageNumbers.push(i);
+        }
+        const renderPageNumbers = pageNumbers.map(number => {
+            return (
+                <li
+                    key={number}
+                    id={number}
+                    onClick={this.handleClick}
+                    className=" page-link"
+                >
+                    {number}
+                </li>
+            );
+        });
         return(
             <div className="border font-weight-bold">
                 <div className="container-fluid bg-light ">
                     <div className="row text-center">
-                        <div className="col-sm-1 border ">No</div>
                         <div className="col-sm-2 border">Project Name</div>
-                        <div className="col-sm-2 border">Description</div>
+                        <div className="col-sm-3 border">Description</div>
                         <div className="col-sm-1 border">Skills</div>
                         <div className="col-sm-1 border">Budget Range</div>
                         <div className="col-sm-2 border">Employer</div>
@@ -137,6 +163,9 @@ class ReleventProject extends Component {
                     </div>
                 </div>
                 {item}
+                <ul id="page-numbers" className="pagination justify-content-center">
+                    {renderPageNumbers}
+                </ul>
             </div>
         )
     }
@@ -163,35 +192,6 @@ class ReleventProject extends Component {
                                            })
                                        }}
                                        placeholder="Search project..."/>
-                                <div className="dropdown ">
-                                    <button className="btn form-control btn-lg btn-outline-primary dropdown-toggle"
-                                        // onClick={() => {
-                                        //     this.setState({
-                                        //         projects: this.state.allProjects
-                                        //     })
-                                        // }}
-                                            type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        Project Status
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button className="dropdown-item" onClick={() => {
-                                            var projects = this.state.allProjects.filter((project) => {
-                                                return (project.project_status == "Open")
-                                            })
-                                            this.setState({
-                                                projects: projects
-                                            })
-                                        }}>Open</button>
-                                        <button className="dropdown-item"  onClick={() => {
-                                            var projects = this.state.allProjects.filter((project) => {
-                                                return (project.project_status == "Close")
-                                            })
-                                            this.setState({
-                                                projects: projects
-                                            })
-                                        }}>closed</button>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>

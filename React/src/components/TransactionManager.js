@@ -27,24 +27,11 @@ class TransactionManager extends Component {
             add:0,
             deduct:0,
             message: false,
-            data : {
-                labels: [
-                    'Add',
-                    'Deduct',
-                ],
-                datasets: [{
-                    data: [300, 50],
-                    backgroundColor: [
-                        '#87BC5E',
-                        '#D46A6A',
-                    ],
-                    hoverBackgroundColor: [
-                        '#3C7113',
-                        '#801515',
-                    ]
-                }]
-            }
+            isPaymentHistoryMsg:false,
+            isTransactionsMsg: false
+
         };
+        this.handlePay = this.handlePay.bind(this);
     }
 
     componentWillMount() {
@@ -54,7 +41,7 @@ class TransactionManager extends Component {
             .then(
                 (response) =>{
 
-                    if(response.value.length != 0) {
+                    if(response.value[0].length != 0) {
                         response.value.map(user => {
 
                             var arrayBufferView = new Uint8Array(user.encodeImage.data);
@@ -67,18 +54,12 @@ class TransactionManager extends Component {
                         });
                     }
 
-                    this.setState({
+                    self.setState({
                         userDetails : response.value[0]
                     });
                     console.log("Inside response");
                     console.log(this.state.userdetails);
 
-                    if(this.props.paymentDetails != "")
-                    {
-                        self.setState({
-                            isPayEnable: true
-                        })
-                    }
 
                     var add = 0;
                     var deduct = 0;
@@ -94,97 +75,132 @@ class TransactionManager extends Component {
                         });
                         self.setState({add:add});
                         self.setState({deduct:deduct});
-                        self.setState({
-                            data: {
-                                ...self.state.data,
-                                ...self.state.datasets,
-                                data: [10 , 12]
-                            }
-                        });
                     }
                 }
             );
-        console.log("ADD");
-        console.log(this.state.add);
-        console.log(this.state.deduct);
-        this.setState({
-            data: {
-                ...this.state.data,
-                ...this.state.datasets,
-                data: [10 , 12]
-            }
-        });
 
 
     }
 
 
     handlePay = () => {
-
-        var transaction = {
-            project_id:this.props.paymentDetails.project_details._id,
-                project_name:this.props.paymentDetails.project_details.project_name,
-                money :this.props.paymentDetails.project_details.hired_freelancer.bid_value
-        }
-
-        console.log("payment Details");
-        console.log()
-
-        console.log("PAYLOAD")
-        console.log(transaction);
-
-        var payload ={
-            employer_id: localStorage.getItem("userId"),
-            freelancer_id: this.props.paymentDetails.project_details.hired_freelancer._id,
-            transaction: transaction,
-            action: "DEDUCT"
-        }
-        console.log("PAYLOAD")
-        console.log(payload);
-
-        if(this.state.userDetails.myFund < transaction.money)
         {
-            this.setState({message: true})
-        }
-        else{
-            var payload ={
-                employer_id: localStorage.getItem("userId"),
-                freelancer_id: this.props.paymentDetails.project_details.hired_freelancer._id,
-                transaction: transaction,
-                myFund:(this.state.userDetails.myFund - transaction.money)
+            if (this.props.paymentDetails.freelancerId !== undefined) {
+                var self = this;
+                var transaction = {
+                    project_id: this.props.paymentDetails.project_details._id,
+                    project_name: this.props.paymentDetails.project_details.project_name,
+                    money: this.props.paymentDetails.project_details.hired_freelancer.bid_value
+                }
+
+                console.log("payment Details");
+                console.log()
+
+                console.log("PAYLOAD")
+                console.log(transaction);
+
+                var payload = {
+                    employer_id: localStorage.getItem("userId"),
+                    freelancer_id: this.props.paymentDetails.project_details.hired_freelancer._id,
+                    transaction: transaction,
+                    action: "DEDUCT"
+                }
+                console.log("PAYLOAD")
+                console.log(payload);
+
+                if (this.state.userDetails.myFund < transaction.money) {
+                    this.setState({message: true})
+                }
+                else {
+                    var payload = {
+                        employer_id: localStorage.getItem("userId"),
+                        freelancer_id: this.props.paymentDetails.project_details.hired_freelancer._id,
+                        transaction: transaction,
+                        myFund: (this.state.userDetails.myFund - transaction.money)
+                    }
+                    API.makePayment(payload)
+                        .then(
+                            (response) => {
+                                console.log("Hey Hey Done");
+                                console.log(response);
+                                self.setState({
+                                    userDetails: response.value
+                                });
+                                var add = 0;
+                                var deduct = 0;
+
+                                if (response.value.transaction_history.length > 0) {
+                                    response.value.transaction_history.map(transaction => {
+                                        if (transaction.action == 'DEDUCT') {
+                                            deduct = deduct + transaction.money;
+                                        }
+                                        if (transaction.action == 'ADD') {
+                                            add = add + transaction.money;
+                                        }
+                                    });
+                                    self.setState({add: add});
+                                    self.setState({deduct: deduct});
+                                }
+                            });
+                }
             }
-            API.makePayment(payload)
-                .then(
-                    (response) =>{
-                        console.log("Hey Hey Done");
-                        console.log(response);
-                        // this.setState({
-                        //     userDetails : response.value[0]
-                        // });
-                    });
+            else
+            {
+                this.setState({isPaymentHistoryMsg: true})
+            }
         }
+
     }
 
     componentDidMount(){
-        // var payload ={userid: localStorage.getItem("userId")};
-        // API.fetchUserDetails(payload)
-        //     .then(
-        //         (response) =>{
-        //             console.log(response);
-        //             this.setState({
-        //                 userDetails : response.value[0]
-        //             });
-        //         });
-
-
-
-
-
+        var self = this;
+        if(this.props.paymentDetails != "")
+        {
+            self.setState({
+                isPayEnable: false
+            })
+        }
     }
 
+    display_transactions() {
+        if (this.state.userDetails.transaction_history !== undefined) {
+            const item = this.state.userDetails.transaction_history.map((transaction, index) => {
+
+                return (
+                    <div className="container-fluid small">
+                        <div className="row text-center">
+                            <div className="col-md-2 border gridFont">{(index + 1)}</div>
+                            <div className="col-md-6 border gridFont">{transaction.project_name}</div>
+                            <div className="col-md-2 border gridFont">{transaction.money}</div>
+                            <div className="col-md-2 border gridFont">{transaction.action}</div>
+                        </div>
+                    </div>
+
+                )
+            });
+            return (
+                <div>
+                    <div className="container-fluid bg-light">
+                        <div className="row text-center">
+                            <div className="col-md-2 border gridHeader">No</div>
+                            <div className="col-md-6 border gridHeader">Project Name</div>
+                            <div className="col-md-2 border gridHeader">Money</div>
+                            <div className="col-md-2 border gridHeader">Action</div>
+                        </div>
+                    </div>
+                    {item}
+                </div>
+            )
+        }
+        else
+        {
+            return(<div>ABC</div>)
+        }
+    }
+
+
+
     render(){
-
-
         var options={
             legend: {
                 display: true,
@@ -193,32 +209,17 @@ class TransactionManager extends Component {
         const pieData = [
             {
                 value: this.state.add,
-                color: "#46BFBD",
-                highlight: "#5AD3D1",
+                color: "#87BC5E",
+                highlight: "#3C7113",
                 label: "Incoming Funds"
             },
             {
                 value: this.state.deduct,
-                color:"#F7464A",
-                highlight: "#FF5A5E",
+                color:"#FF5A5E",
+                highlight: "#D46A6A",
                 label: "Incoming Funds"
             }
         ];
-
-        // const item = this.state.userDetails.transaction_history.map((transaction,index) =>{
-        //
-        //     return(
-        //         <div className="container-fluid small">
-        //             <div className="row text-center">
-        //                 <div className="col-sm-1 border gridFont">{(index + 1)}</div>
-        //                 <div className="col-sm-2 border gridFont">{transaction.project_name}</div>
-        //                 <div className="col-sm-1 border gridFont">{transaction.money}</div>
-        //                 <div className="col-sm-1 border gridFont">{transaction.action}</div>
-        //             </div>
-        //         </div>
-        //
-        //     )
-        // });
 
         return(
 
@@ -229,31 +230,39 @@ class TransactionManager extends Component {
                 <div className="container-fluid">
                     <div class="row">
                         <div className="col-md-9">
-                            {this.state.message ? <div className="alert alert-success text-danger small" role="alert">
+                            {this.state.message ? <div className="alert alert-info alert-dismissible fade show" role="alert">
                                 You do not have sufficient funds, Please add money.
                             </div> : null}
-                            <div className="col-lg-12"><button className="btn-success btn-lg btn btn-lg" hidden={this.state.isPayDisable}
+                            { this.state.isPaymentHistoryMsg ?<div className="alert alert-info alert-dismissible fade show">
+                                You have not hired any freelancer.
+                            </div> : null}
+
+                            <div>
+                                <Pie data={pieData}  width="200" height="150"/>
+                                {/*<Pie data={this.state.data}/>*/}
+                            </div>
+                            <br/>
+                            <div>
+                                <span className="label label-default font-weight-bold form-control-lg">Earned Money</span><span className="label label-success font-weight-bold form-control-lg">{this.state.add}</span>
+                            </div>
+                            <br/>
+                            <div>
+                                <span className="label label-default font-weight-bold form-control-lg">Spent Money</span><span className="label label-danger font-weight-bold form-control-lg">{this.state.deduct}</span>
+                            <div>
+                                <br/>
+                            {this.display_transactions()}
+                            </div>
+
+                        </div>
+                        </div>
+                            <div className="col-md-3">
+                            <div><h2>Current Balance : {this.state.userDetails.myFund}</h2></div>
+                            <div className="col-lg-12"><button className="btn-success btn-lg"
+                                                               // disabled={this.state.isPayDisable}
                                                                onClick={()=>{
                                                                    this.handlePay()
                                                                }}>PAY</button>
                             </div>
-                            <div>
-                                <Pie data={pieData}  width="400" height="200"/>
-                                {/*<Pie data={this.state.data}/>*/}
-                            </div>
-                                <div className="container-fluid bg-light">
-                                    <div className="text-center">
-                                        <div className="col-sm-1 border gridHeader">No</div>
-                                        <div className="col-sm-2 border gridHeader">Project Name</div>
-                                        <div className="col-sm-1 border gridHeader">Money</div>
-                                        <div className="col-sm-1 border gridHeader">Action</div>
-                                    </div>
-                                </div>
-                                {/*{item}*/}
-                        </div>
-
-                        <div className="col-md-3">
-                            <div><h2>Current Balance : {this.state.userDetails.myFund}</h2></div>
                             <div className="col-lg-12"><button className="btn-success btn-lg btn btn-lg" hidden={this.state.isPayDisable}
                                                                onClick={()=>{
                                                                    this.handlePay()
@@ -360,6 +369,7 @@ class TransactionManager extends Component {
         )
     }
 }
+
 
 const mapStateToProps = (state) => {
     return {
