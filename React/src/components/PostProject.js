@@ -88,7 +88,8 @@ class PostProject extends Component {
                 if(this.validateProjectFile() == true) {
                     if(this.validateSkills() == true) {
                         if(this.validateBudget() == true) {
-                            this.props.dispatch(this.props.addProject(this.state.projectData));
+                            this.props.dispatch(this.props.addProject(this.state.projectData))
+                        .then(() => this.props.history.push('/dashboard'));
                         }
                         else{
                             this.setState({isBudgetMin: false})
@@ -180,13 +181,13 @@ class PostProject extends Component {
                         <Link to = "/mailpage"><LogoImage className="image"/></Link>
                         <br/>
                         <div className="text-left">
-                            <div className="form-group">
-                                {this.props.message && (
-                                    <div className="form-control alert alert-warning text-danger" role="alert">
-                                        {this.props.message}
-                                    </div>
-                                )}
-                            </div>
+                            {/*<div className="form-group">*/}
+                                {/*{this.props.message && (*/}
+                                    {/*<div className="form-control alert alert-warning text-danger" role="alert">*/}
+                                        {/*{this.props.message}*/}
+                                    {/*</div>*/}
+                                {/*)}*/}
+                            {/*</div>*/}
                         </div>
                         <div className="text-left">
                             <h1 className="">Tell us what you need done</h1>
