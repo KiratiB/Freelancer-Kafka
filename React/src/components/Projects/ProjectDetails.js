@@ -125,7 +125,8 @@ class Projectdetails extends Component {
                              onClick={() => {
                                  var payload = {
                                      fl_id:users._id,
-                                     project_id: this.props.projectdetails._id
+                                     project_id: this.props.projectdetails._id,
+                                     fl_email: users.email
                                  }
                                  API.HireFreelancer(payload)
                                      .then(
@@ -296,7 +297,7 @@ class Projectdetails extends Component {
             <br/>
             <div>
                 <div>
-                    {this.state.projectStatus == 'Open' ?  this.state.users.length > 0 ?  this.display_users() : <div><h4>No Bids Yet</h4></div>  :
+                    {this.state.projectStatus == 'Open' ?  this.state.users.length > 0 ?  this.display_users() : <div className="alert alert-info"><h4>No Bids Yet</h4></div>  :
                         (!this.state.isuserHiredFreelancer && !this.state.isUserEmployer) ? <div>
                             <h4>Hiring is Closed</h4>
                         </div> : null
