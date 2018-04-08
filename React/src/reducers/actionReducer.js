@@ -71,6 +71,7 @@ export default function actionReducer (state = defaultState, action) {
               return newState;
 
         case 'logoutSuccess':
+              newState.isLoggedIn = false;
               newState.isAuthentic= false;
               return newState;
 
