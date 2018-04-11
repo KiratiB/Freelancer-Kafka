@@ -12,7 +12,6 @@ var passport = require('passport');
 
 var app = express();
 
-
 //Enable CORS
 var corsOptions = {
     origin: 'http://ec2-18-219-160-31.us-east-2.compute.amazonaws.com:3000',
