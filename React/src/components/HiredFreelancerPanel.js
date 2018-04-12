@@ -20,6 +20,7 @@ class HiredFreelancerPanel extends Component {
             }
         };
     }
+    
 
     handleFileUpload = (event) => {
 
