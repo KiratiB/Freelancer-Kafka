@@ -29,7 +29,6 @@ class Login extends Component {
         //event.preventDefault();
     }
 
-
     componentWillMount(){
         this.props.dispatch(this.props.requestAuth(this.state.userdata))
             .then(() => this.props.isAuthentic ? this.props.history.push('/dashboard') : this.props.history.push('/login'));
