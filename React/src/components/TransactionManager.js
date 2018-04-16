@@ -33,7 +33,7 @@ class TransactionManager extends Component {
         };
         this.handlePay = this.handlePay.bind(this);
     }
-    
+
     componentWillMount() {
         var payload ={userid: localStorage.getItem("userId")};
         var self = this;
@@ -78,8 +78,6 @@ class TransactionManager extends Component {
                     }
                 }
             );
-
-
     }
 
 
