@@ -7,6 +7,25 @@ On the terminal: npm install -g create-react-app
 
 Follow the steps on the terminal to start the servers:
 
+Follow the steps to start zookeper and Kafka
+
+Zookeeper: .\zookeeper-server-start.bat ..\..\config\zookeeper.properties
+
+Kafka: .\kafka-server-start.bat ..\..\config\server.properties
+
+Create Topics:
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic login_topic
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic login_topic_response
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic signup_topic
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic signup_topic_response
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic skill_topic
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic skill_topic_response 
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic project_topic_response
+.\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic project_topic 
+
+
+Start MongoDB server:mongod.exe --dbpath "C:\data"
+
 
 Back-end server
 	
@@ -22,7 +41,12 @@ Front-end server
 	2. npm install
 	
 	3. npm start
-Kafka-back-end server 
-	1. cd Kafka
+	
+
+Kafka-Back-End server
+	
+	1. cd React	
 	2. npm install
+	
 	3. npm start
+
