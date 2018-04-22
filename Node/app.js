@@ -14,7 +14,7 @@ var app = express();
 
 //Enable CORS
 var corsOptions = {
-    origin: 'http://ec2-52-14-133-230.us-east-2.compute.amazonaws.com:3000',
+    origin: 'http://localhost:3000',
     credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
