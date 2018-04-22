@@ -5,7 +5,7 @@ export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const SIGNUP_ERROR = 'SIGNUP_ERROR';
 
 // const api = 'http://localhost:3001';
-var dnsString = "http://ec2-18-219-160-31.us-east-2.compute.amazonaws.com:3001"
+var dnsString = "http://ec2-52-14-133-230.us-east-2.compute.amazonaws.com:3001"
 // var dnsString = "http://localhost:3001"
 const headers = {
     'Accept': 'application/json'
